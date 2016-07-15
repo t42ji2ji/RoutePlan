@@ -1,0 +1,96 @@
+﻿<!DOCTYPE html>
+
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <script src="http://maps.googleapis.com/maps/api/js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBkhtPTP575pw6MdMS6eZ5X6n68LMt6Ero"
+            type="text/javascript"></script>
+
+    <style>
+        .glyphicon-play-circle {
+            -moz-animation: cssAnimation 2  2 ease;
+        } @@-webkit-keyframes cssAnimation{
+             from { -webkit-transform:  rotate(0deg) scale(1) skew(1deg) translate(0px);}
+             to { -webkit-transform:  rotate(91deg) scale(1) skew(-1deg) translate(0px);}
+         }
+    </style>  
+</head>
+
+
+
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+
+            <ul class="nav navbar-nav navbar-left" style="padding-right:50px;">
+                <li><a href="#" onclick="return theFunction();" ><span class="glyphicon glyphicon-play-circle"></span> menu </a></li>
+            </ul>
+
+            <div class="navbar-header">
+                @Html.ActionLink("路徑規劃", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                    <li>@Html.ActionLink("About", "About", "Home")</li>
+                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                </ul>
+            
+            </div>
+        </div>
+    </div>
+
+        <div class="container-fluid" style="width:100%;left:0;">
+            @RenderBody()
+            <hr />
+            <footer>
+                <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+            </footer>
+        </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+
+    <script>
+        function theFunction(){
+            $("#sidebar").toggle(
+                function () {
+                    $('#panel').animate({
+                        height: "150",
+                        padding: "20px 0",
+                        backgroundColor: '#000000',
+                        opacity: .8
+                    }, 500);
+                    $('#otherdiv').animate({
+                        //otherdiv properties here
+                    }, 500);
+                },
+                function () {
+                    $('#panel').animate({
+                        height: "0",
+                        padding: "0px 0",
+                        opacity: .2
+                    }, 500);
+                    $('#otherdiv').animate({
+                        //otherdiv properties here
+                    }, 500);
+                });
+
+            $(function () {
+                $("#sidebar").draggable();
+            });
+        };
+
+
+    </script>
+</body>
+</html>
+
+
