@@ -1,9 +1,19 @@
-﻿@{
+﻿@model RoutePlan.ViewModels.LocationViewModel
+@{
     ViewBag.Title = "Home Page";
 }
 
 
 <script>
+    
+    onload();
+    
+
+    function onload() {
+
+    }
+
+
     var labels = '0123456789';
     var labelIndex = 0;
     var map;
@@ -12,6 +22,37 @@
     var RoutePath;
     var markers = [];
     var Polys = [];
+
+    var myStyle = [
+      {
+          featureType: "administrative",
+          elementType: "labels",
+          stylers: [
+            { visibility: "off" }
+          ]
+      }, {
+          featureType: "poi",
+          elementType: "labels",
+          stylers: [
+            { visibility: "off" }
+          ]
+      }, {
+          featureType: "water",
+          elementType: "labels",
+          stylers: [
+            { visibility: "off" }
+          ]
+      }, {
+          featureType: "road",
+          elementType: "labels",
+          stylers: [
+            { visibility: "off" }
+          ]
+      }
+    ];
+
+
+
 
     function initialize() {
 
@@ -22,13 +63,18 @@
 
         var mapProp = {
             center: new google.maps.LatLng(taichung),
-        zoom:8,
-        mapTypeId:google.maps.MapTypeId.ROADMAP
-      };
+            zoom: 8,
+            streetViewControl: false,
+            mapTypeId: google.maps.MapTypeId.TERRAIN,
+            mapTypeIds: ['mystyle', google.maps.MapTypeId.ROADMAP, google.maps.MapTypeId.TERRAIN]
+        };
+        
+    
+
         map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
         // This event listener calls addMarker() when the map is clicked.
             google.maps.event.addListener(map, 'click', function (event) {
-                /*addLatLng(event);*/
+                addLatLng(event);
             });
             
      /*   addMarker(taichung);
@@ -47,11 +93,11 @@
                 addMarker(change,map);
             }
             */
-            Polyline = new google.maps.Polyline({
+        /*    Polyline = new google.maps.Polyline({
             strokeColor: '#FF0000',
             strokeOpacity: 1.0,
             strokeWeight: 3
-        });Polys.push(Polyline);
+        });Polys.push(Polyline);*/
     }
     google.maps.event.addDomListener(window, 'load', initialize);
 
@@ -78,15 +124,29 @@
     }*/
 
     //AddMarker by dropdown menu
-    function addMarkerbtn(click_id) {
+    function addMarkerbtn(click) {
+        //紀錄MARKER
         labelIndex++;
+
+        var place = ["taichung", "taipei", "hualien", "kenting"];
+        var click_id = parseInt(click.getAttribute("id"));
+        var click_data_type = click.getAttribute("data-type");
+
+        //change dropdownmenu title
+        if (click_data_type == 0) {
+            document.getElementById("from_title").innerHTML = place[click_id-1];
+        } else {
+            document.getElementById("to_title").innerHTML = place[click_id-1];
+        }
+
+
         var loc =  { lat: 24.179971, lng: 120.648392 };
         var taichung = { lat: 24.179971, lng: 120.648392 };
         var taipei = { lat: 25.070464, lng: 121.539287 };
         var hualien = { lat: 23.987346, lng: 121.523299 };
         var kenting = { lat: 22.100813, lng: 120.816232 };
 
-        switch (parseInt(click_id)) {
+        switch (click_id) {
             case 1:
                 loc = taichung;
                 Route.push(loc);
@@ -119,14 +179,18 @@
             map: map
         });
 
-        $("#fli_" + click_id).addClass('disabled');
-        $("#pli_" + click_id).addClass('disabled');
-        $("#tli_" + click_id).addClass('disabled');
 
-    //    var path = Polyline.getPath();
-     //   path.push(loc);
+        $("#fli_" + click_id).toggleClass('able disabled');
+        $("#tli_" + click_id).toggleClass('able disabled');
+
+        //放質進去
+    //    $('#form_from').val(click_id);
+        //$('#form_to').val(click_id);
+
+        //畫線
         simpleRoute();
 
+        //標地標
         markers.push(marker);
     }
 
@@ -158,6 +222,7 @@
     //Route
     function simpleRoute() {
         // simple route
+        //cleanRoute();
         RoutePath = new google.maps.Polyline({
             path: Route,
             geodesic: true,
@@ -179,21 +244,24 @@
         deleteMarkers();
         labelIndex = 0;
 
+        //標題還原
+            document.getElementById("from_title").innerHTML = "From";
+            document.getElementById("to_title").innerHTML = "To";
+
         //還原選項
         for (var i = 1; i < 5; i++) {
             document.getElementById("fli_" + i).className = "able";
-            document.getElementById("pli_" + i).className = "able";
             document.getElementById("tli_" + i).className = "able";
         }
 
-        //刪除線條
+        cleanRoute();
+    }
+    //刪除線條
+    function cleanRoute() {
         for (var j = 0; j < Polys.length; j++) {
             Polys[j].setMap(null);
         } Polys.length = 0;
-
     }
-
-
 
     // Sets the map on all markers in the array.
     function setMapOnAll(map) {
@@ -222,6 +290,23 @@
         markers = [];
     }
 
+
+
+    function AJAX() {
+        var data ={
+            "lvm[0].ID": "IDOO",
+            "lvm[0].longitude": 1.5,
+            "lvm[0].latitude": 187,
+            "lvm[1].ID": "IDOO",
+            "lvm[1].longitude": 1.125,
+            "lvm[1].latitude": 187
+        };
+        $.post("@Url.Content("~/Home/Update")", data, function(res) {
+                alert(JSON.stringify(res));
+            }, "json");
+    }
+
+
 </script>
 
 <style>
@@ -238,56 +323,48 @@
 
 <div class="container-fluid"style="position:relative;">
 
-   <div id="googleMap"></div>
+   <div id="googleMap" ></div>
+
     <div id="sidebar" style="margin-left:50px;margin-top:100px; background-color:white;width:300px;height:400px;z-index:2;position:absolute; box-shadow: 7px 8px 10px #545454;">
 
         <div style="font-weight:bold;background-color:dodgerblue;width:100%;height:50px;text-align:center;line-height:50px;color:white;">MENU</div>
-
+      
          <div id="from" class="dropdown" style="margin-left:20px;margin-top:20px;">
-                <span> 起點: </span>
-                <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">
-                    FROM
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu"  role="menu" aria-labelledby="menu1">
-                    <li id="fli_1" role="presentation"><a id="1" role="menuitem" tabindex="-1" href="#" onclick="return addMarkerbtn(this.id);">台中</a></li>
-                    <li id="fli_2" role="presentation"><a id="2" role="menuitem" tabindex="-1" href="#" onclick="return addMarkerbtn(this.id);">台北</a></li>
-                    <li id="fli_3" role="presentation"><a id="3" role="menuitem" tabindex="-1" href="#" onclick="return addMarkerbtn(this.id);">花蓮</a></li>
-                    <li id="fli_4" role="presentation"><a id="4" role="menuitem" tabindex="-1" href="#" onclick="return addMarkerbtn(this.id);">墾丁</a></li>
-                </ul>
-        </div>
-
-        <div id="past" class="dropdown" style="margin-left:20px;margin-top:20px;">
-            <span> 經過: </span>
+            <span> 起點1231323: </span>
             <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">
-                PAST
+                    <span id="from_title">FROM</span>
                 <span class="caret"></span>
             </button>
-            <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
-                <li id="pli_1" role="presentation"><a id="1" role="menuitem" tabindex="-1" href="#" onclick="return addMarkerbtn(this.id);">台中</a></li>
-                <li id="pli_2" role="presentation"><a id="2" role="menuitem" tabindex="-1" href="#" onclick="return addMarkerbtn(this.id);">台北</a></li>
-                <li id="pli_3" role="presentation"><a id="3" role="menuitem" tabindex="-1" href="#" onclick="return addMarkerbtn(this.id);">花蓮</a></li>
-                <li id="pli_4" role="presentation"><a id="4" role="menuitem" tabindex="-1" href="#" onclick="return addMarkerbtn(this.id);">墾丁</a></li>
-            </ul>
+            <ul class="dropdown-menu" id="from"  role="menu" aria-labelledby="menu1">
+                <li id="fli_1" class="able" role="presentation"><a id="1" data-type = "0" role="menuitem"  tabindex="-1" href="#" onclick="return addMarkerbtn(this);">台中</a></li>
+                <li id="fli_2" class="able" role="presentation"><a id="2" data-type = "0" role="menuitem" tabindex="-1" href="#" onclick="return addMarkerbtn(this);">台北</a></li>
+                <li id="fli_3" class="able" role="presentation"><a id="3" data-type = "0" role="menuitem" tabindex="-1" href="#" onclick="return addMarkerbtn(this);">花蓮</a></li>
+                <li id="fli_4" class="able" role="presentation"><a id="4" data-type = "0" role="menuitem" tabindex="-1" href="#" onclick="return addMarkerbtn(this);">墾丁</a></li>
+            </ul>  
         </div>
+       <!--<input type="text" id="form_from" name="form_from" style="visibility: hidden;">-->
+
 
         <div id="to" class="dropdown" style="margin-left:20px;margin-top:20px;">
             <span> 終點: </span>
             <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">
-                TO
+                <span id="to_title">TO</span>
                 <span class="caret"></span>
             </button>
-            <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
-                <li id="tli_1" role="presentation"><a id="1" role="menuitem" tabindex="-1" href="#" onclick="return addMarkerbtn(this.id);">台中</a></li>
-                <li id="tli_2" role="presentation"><a id="2" role="menuitem" tabindex="-1" href="#" onclick="return addMarkerbtn(this.id);">台北</a></li>
-                <li id="tli_3" role="presentation"><a id="3" role="menuitem" tabindex="-1" href="#" onclick="return addMarkerbtn(this.id);">花蓮</a></li>
-                <li id="tli_4" role="presentation"><a id="4" role="menuitem" tabindex="-1" href="#" onclick="return addMarkerbtn(this.id);">墾丁</a></li>
-            </ul>
+            <ul class="dropdown-menu" id="to" role="menu" aria-labelledby="menu1">
+                <li id="tli_1" class="able" role="presentation"><a id="1" data-type = "1" role="menuitem" tabindex="-1" href="#" onclick="return addMarkerbtn(this);">台中</a></li>
+                <li id="tli_2" class="able" role="presentation"><a id="2" data-type = "1" role="menuitem" tabindex="-1" href="#" onclick="return addMarkerbtn(this);">台北</a></li>
+                <li id="tli_3" class="able" role="presentation"><a id="3" data-type = "1" role="menuitem" tabindex="-1" href="#" onclick="return addMarkerbtn(this);">花蓮</a></li>
+                <li id="tli_4" class="able" role="presentation"><a id="4" data-type = "1" role="menuitem" tabindex="-1" href="#" onclick="return addMarkerbtn(this);">墾丁</a></li>
+            </ul>   
         </div>
+       <!--<input type="text" id="form_to" name="form_to" style="visibility: hidden;">-->
+
 
         <div class="btn-group" role="group" aria-label="按鈕" style="margin-left:20px;margin-top:20px;">
-            
+            <button type="submit" class="btn btn-success">規劃路徑</button>
             <button type="button" class="btn btn-danger" onclick="removeRoute()">清除</button>
+            <button type="button" class="btn btn-default" onclick="AJAX()">AJAX</button>
         </div>
 
     </div>

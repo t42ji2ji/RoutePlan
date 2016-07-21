@@ -1,5 +1,14 @@
-﻿@{
+﻿@model RoutePlan.ViewModels.ReportViewModel
+@{
     ViewBag.Title = "Contact";
 }
 <h2>@ViewBag.Title.</h2>
 <h3>@ViewBag.Message</h3>
+
+@using (Html.BeginForm())
+{
+    <input type="text" name="reportName" />
+    <input type="submit" />
+}
+
+<div>@Model.Name</div>
