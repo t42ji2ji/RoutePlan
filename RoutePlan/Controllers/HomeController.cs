@@ -23,12 +23,14 @@ namespace RoutePlan.Controllers
             return View();
         }
 
-        public ActionResult Update(List<LocationViewModel> lvm)
+        public ActionResult Update(String from,String to)
         {
-            foreach(var item in lvm)
-            {
-                item.ID = "UPDATE";
-            }
+
+            List<LocationViewModel> lvm = new List<LocationViewModel>();
+
+            lvm.Add(new LocationViewModel { ID = from, longitude = 94.7, latitude = 99.9});
+            lvm.Add(new LocationViewModel { ID = to, longitude = 0.2323, latitude = 0.2565656 });
+
             return Json(lvm);
         }
 
