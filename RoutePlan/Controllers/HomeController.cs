@@ -8,28 +8,44 @@ using RoutePlan.ViewModels;
 
 namespace RoutePlan.Controllers
 {
+
+ 
+
     public class HomeController : Controller
     {
+        private static Graph graph = new Graph(7);
         public ActionResult Index()
         {
+            graph.ReadEdge("C:\\Users\\奕中老師\\Desktop\\res\\res\\salu_edge.txt");
+            graph.ReadVertices("C:\\Users\\奕中老師\\Desktop\\res\\res\\salu_node.txt");
+            
             return View();
-        }
+        }       
 
         [HttpPost]
         public ActionResult Index(string form_from,string form_to)
         {
             LocationViewModel lvm = new LocationViewModel();
-            
+
+           
+         
             return View();
         }
 
         public ActionResult Update(String from,String to)
         {
+           
+            List<string> path = graph.shortestPathQuery("1", "917");
+            List<Vertex> vertexPath = graph.transformPath(path);
+            Vertex v1, v2;
+
+            v1 = vertexPath[0];
+            v2 = vertexPath[1];
 
             List<LocationViewModel> lvm = new List<LocationViewModel>();
 
-            lvm.Add(new LocationViewModel { ID = from, longitude = 94.7, latitude = 99.9});
-            lvm.Add(new LocationViewModel { ID = to, longitude = 0.2323, latitude = 0.2565656 });
+           lvm.Add(new LocationViewModel { ID = v1.ID, longitude = v1.Longitude, latitude = v1.Latitude});
+           lvm.Add(new LocationViewModel { ID = to, longitude = 0.2323, latitude = 0.2565656 });
 
             return Json(lvm);
         }
