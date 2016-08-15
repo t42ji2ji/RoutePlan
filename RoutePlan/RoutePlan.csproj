@@ -214,7 +214,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Skyline\DimensionErrorException.cs" />
     <Compile Include="Skyline\Edge.cs" />
-    <Compile Include="Skyline\Graph.cs" />
+    <Compile Include="Skyline\Graph\Graph.BinaryReader.cs" />
+    <Compile Include="Skyline\Graph\Graph.cs" />
+    <Compile Include="Skyline\Graph\Graph.FileCreater.cs" />
+    <Compile Include="Skyline\Graph\Graph.Reader.cs" />
+    <Compile Include="Skyline\Graph\Graph.Skyline.cs" />
+    <Compile Include="Skyline\Graph\Graph.TextReader.cs" />
     <Compile Include="Skyline\Skyline.cs" />
     <Compile Include="Skyline\Vertex.cs" />
     <Compile Include="Startup.cs" />

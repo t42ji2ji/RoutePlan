@@ -1,0 +1,15 @@
+struct BinaryEdgeFile{
+  uint8 dimension;
+  struct AdjacencyList[...]
+}
+
+struct AdjacencyList{
+  uint16 centerNode;
+  uint8 length;
+  struct Edge[length]
+}
+
+struct Edge{
+  uint16 destinationNode;
+  float weight[dimension]
+}

@@ -37,7 +37,7 @@ class Vertex
 
     public override string ToString()
     {
-        return string.Format("id={0,-7}longitude={1,-10:0.00}latitude={2,-10:0.00}", _ID, _longitude, _latitude);
+        return string.Format("[{0}]({1:0.00},{2:0.00})", _ID, _longitude, _latitude);
     }
 }
 
