@@ -19,13 +19,13 @@ partial class Graph
 
                 while (true)
                 {
-                    string centerNode = reader.ReadUInt16().ToString();
+                    string centerNode = reader.ReadString();
                     byte length = reader.ReadByte();
                     List<Edge> neighbor = new List<Edge>();
 
                     for (int i = 0; i < length; ++i)
                     {
-                        string destinationNode = reader.ReadUInt16().ToString();
+                        string destinationNode = reader.ReadString();
                         float[] weights = new float[dimension];
 
                         for (int j = 0; j < dimension; ++j)
@@ -47,7 +47,7 @@ partial class Graph
             {
                 while (true)
                 {
-                    string name = reader.ReadUInt16().ToString();
+                    string name = reader.ReadString();
                     float longitude = reader.ReadSingle();
                     float latitude = reader.ReadSingle();
 

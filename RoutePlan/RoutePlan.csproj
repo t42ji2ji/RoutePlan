@@ -212,15 +212,16 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Skyline\DimensionErrorException.cs" />
     <Compile Include="Skyline\Edge.cs" />
+    <Compile Include="Skyline\Graph\DimensionErrorException.cs" />
     <Compile Include="Skyline\Graph\Graph.BinaryReader.cs" />
     <Compile Include="Skyline\Graph\Graph.cs" />
     <Compile Include="Skyline\Graph\Graph.FileCreater.cs" />
     <Compile Include="Skyline\Graph\Graph.Reader.cs" />
     <Compile Include="Skyline\Graph\Graph.Skyline.cs" />
     <Compile Include="Skyline\Graph\Graph.TextReader.cs" />
-    <Compile Include="Skyline\Skyline.cs" />
+    <Compile Include="Skyline\Graph\GraphException.cs" />
+    <Compile Include="Skyline\Path.cs" />
     <Compile Include="Skyline\Vertex.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\LocationViewModel.cs" />
@@ -229,13 +230,15 @@
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
-    <Content Include="DATA\G1.txt" />
-    <Content Include="DATA\G1_break.txt" />
-    <Content Include="DATA\G2.txt" />
-    <Content Include="DATA\salu_edge.txt" />
-    <Content Include="DATA\salu_node.txt" />
-    <Content Include="DATA\test-edge.txt" />
-    <Content Include="DATA\test-node.txt" />
+    <Content Include="DATA\BinaryEdgeFileFormat.txt" />
+    <Content Include="DATA\filecreater.exe" />
+    <Content Include="DATA\text\1000Edge%282%29.txt" />
+    <Content Include="DATA\text\1000Edge%283%29.txt" />
+    <Content Include="DATA\text\1000Nodes.txt" />
+    <Content Include="DATA\text\100Edges.txt" />
+    <Content Include="DATA\text\100Nodes.txt" />
+    <Content Include="DATA\text\ming_edges.txt" />
+    <Content Include="DATA\text\ming_nodes.txt" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -247,6 +250,11 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="DATA\binary\1000Edge%282%29" />
+    <Content Include="DATA\binary\1000Edge%283%29" />
+    <Content Include="DATA\binary\1000Node" />
+    <Content Include="DATA\binary\100Edge" />
+    <Content Include="DATA\binary\100Node" />
     <None Include="Properties\PublishProfiles\jj.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />

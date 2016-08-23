@@ -30,22 +30,58 @@ using System.Collections;
 
 partial class Graph
 {
-    static void Main(string[] args)
+    void Main(string[] args)
     {
-        Graph graph = new Graph(new BinaryReader());
+        /*string[] origin = File.ReadAllLines("../../res/text/ming_nodes.txt");
+        StreamWriter writer = new StreamWriter(File.Open("../../res/text/ming_nodes2.txt", FileMode.Create));
+        string[] newLines = new string[origin.Length];
 
-        Console.WriteLine("start read edge");
-        graph.ReadEdge("../res/binary/1000Edge(2)");
-        Console.WriteLine("complete read edge");
+        foreach(string line in origin)
+        {
+            string[] token = line.Split(' ');
+            string newLine = "";
+            for (int i = 1; i < token.Length; ++i)
+            {
+                if (i != 1) newLine += " ";
+                 newLine += token[i];
+            }
+            writer.WriteLine(newLine);
+        }*/
+        
+        try
+        {
+            Graph graph = new Graph(new TextReader());
+            StreamWriter writer = new StreamWriter(File.Open("log.txt", FileMode.Create));
 
-        Console.WriteLine("start skyline query");
-        List<List<string>> paths = graph.SkylineQuery("1", "100");
-        Console.WriteLine("complete skyline query");
+            graph.ReadEdge("../../res/text/test.txt");
+            //graph.ReadNode("../../res/binary/100Node");
 
-        foreach (var path in paths)
-            Console.WriteLine(PathString(path));
+            for (int end = 0; end < 500; ++end)
+            {
+                try
+                {
+                    List<Path> paths = graph.SkylineQuery("7", end.ToString());
+                    writer.WriteLine("Skyline Paths: ");
+                    foreach (var path in paths)
+                        writer.WriteLine(path);                    
+                }
+                catch(GraphException e)
+                {
+                    writer.WriteLine(e.Message);
+                }
+                writer.Flush();
+            }
+            writer.Close();
 
-        Console.WriteLine("Complete");
+            //graph.TransformPaths(paths);
+            Console.WriteLine("Complete");
+        }
+        catch (GraphException e)
+        {
+            Console.WriteLine(e.Message);
+        }
+          
+                
         Console.ReadLine();
     }
 
@@ -57,12 +93,15 @@ partial class Graph
     private HashSet<string> found;
     private Dictionary<string, float> distance;
 
+    private bool hasReadEdge = false;
+    private bool hasReadNode = false;
+
     public enum DominateResult
     {
         DOMINATE,
         BE_DOMINATE,
         NON_DOMINATE
-    }   
+    }
 
     public Graph(Reader reader)
     {
@@ -72,6 +111,9 @@ partial class Graph
 
     public List<string> ShortestPathQuery(string start, string end)
     {
+        if (!hasReadEdge)
+            throw new GraphException("尚未執行ReadEdge");
+
         //Initialize
         found = new HashSet<string>();
         distance = new Dictionary<string, float>();
@@ -112,27 +154,19 @@ partial class Graph
         }
     }
 
-    public List<List<string>> SkylineQuery(string start, string end)
+    public List<Path> SkylineQuery(string start, string end)
     {
+        if (!hasReadEdge)
+            throw new GraphException("尚未執行ReadEdge");
+
+        if (!adjacencyList.ContainsKey(start))        
+            throw new GraphException("找不到起始節點: " + start);      
+
+        if (!adjacencyList.ContainsKey(end))
+            throw new GraphException("找不到終點節點: " + end);        
+
         return new Skyline(this).SkylineQuery(start, end);
-    }
-
-    public static string PathString(List<string> path)
-    {
-        string buffer = "[";
-
-        if(path.Count > 0)
-        {
-            buffer += path[0];
-            for (int i = 1; i < path.Count; ++i)
-                buffer += "-" + path[i];
-            return buffer + "]";
-        }
-        else
-        {
-            return "no path";
-        }       
-    }
+    }    
 
     private void Update(string expand, string des)
     {
@@ -174,21 +208,25 @@ partial class Graph
         return choosedVertex;
     }
 
-    public List<Vertex> TransformPath(List<string> path)
+    public List<Vertex> TransformPath(Path path)
     {
+        if (!hasReadNode)
+            throw new GraphException("尚未執行ReadNode");
+
         List<Vertex> vertexPath = new List<Vertex>();
 
-        foreach(string vertex in path){
-            vertexPath.Add(vertices[vertex]);
+        foreach(string vertex in path.nodes){
+            try { vertexPath.Add(vertices[vertex]); }
+            catch (KeyNotFoundException e) { throw new GraphException(e.Message); }
         }
         return vertexPath;
     }
 
-    public List<List<Vertex>> TransformPaths(List<List<string>> paths)
+    public List<List<Vertex>> TransformPaths(List<Path> paths)
     {
         List<List<Vertex>> vertexPaths = new List<List<Vertex>>();
 
-        foreach (List<string> path in paths)        
+        foreach (Path path in paths)        
             vertexPaths.Add(TransformPath(path));
         
         return vertexPaths;
@@ -196,11 +234,13 @@ partial class Graph
     
     public void ReadEdge(string filePath)
     {
+        hasReadEdge = true;
         reader.ReadEdge(filePath);
     }
 
     public void ReadNode(string filePath)
     {
+        hasReadNode = true;
         reader.ReadNode(filePath);
     }
 
@@ -233,23 +273,6 @@ partial class Graph
         foreach(Vertex vertex in vertices.Values){
             Console.WriteLine(vertex.ToString());
         }        
-    }
-
-    public static DominateResult Dominate(float[] self, float[] other)
-    {
-        bool dominateOther = true;
-        bool beDominate = true;
-        for (int i = 0; i < self.Length; ++i)
-        {
-            if (self[i] > other[i])
-                dominateOther = false;
-            if (self[i] < other[i])
-                beDominate = false;
-        }
-
-        if (dominateOther) return DominateResult.DOMINATE; //If weights are the same, then dominate other
-        else if (beDominate && !dominateOther) return DominateResult.BE_DOMINATE;
-        else return DominateResult.NON_DOMINATE; //If not dominate each other, then dominateOther = false and beDominate = false
-    }
+    }    
 }
 

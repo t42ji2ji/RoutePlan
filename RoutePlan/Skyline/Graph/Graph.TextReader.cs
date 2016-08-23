@@ -15,12 +15,12 @@ partial class Graph
             {
                 //Initializing
                 string[] lines = File.ReadAllLines(filePath);
-                graph.dimension = lines[0].Split(' ').Length - 3;
+                graph.dimension = lines[0].Split((char[])null, StringSplitOptions.RemoveEmptyEntries).Length - 3;
 
                 //Each line is a Edge
                 foreach (string line in lines)
                 {
-                    string[] tokens = line.Split(' ');
+                    string[] tokens = line.Split((char[])null, StringSplitOptions.RemoveEmptyEntries);
 
                     if (tokens.Length - 3 < graph.dimension)
                         throw new DimensionErrorException(graph.dimension, tokens.Length - 3);

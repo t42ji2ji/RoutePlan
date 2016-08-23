@@ -31,17 +31,17 @@ namespace RoutePlan.Controllers
 
         public ActionResult Update(String from,String to)
         {
-            graph.ReadEdge(Server.MapPath("DATA/binary/1000Edge(2)"));
-            graph.ReadNode(Server.MapPath("DATA/binary/1000Node"));
+            graph.ReadEdge(Server.MapPath("~/DATA/binary/ming.edges"));
+            graph.ReadNode(Server.MapPath("~/DATA/binary/ming.nodes"));
 
             List<LocationViewModel> lvm = new List<LocationViewModel>();
 
-            List<List<string>> paths = graph.SkylineQuery("1", "100");
+            //List<Path> paths = graph.SkylineQuery("會同館", "翟城驛");
 
-            foreach(Vertex vertex in graph.TransformPath(paths[0]))            
+           /* foreach(Vertex vertex in graph.TransformPath(paths[0]))            
                 lvm.Add(new LocationViewModel { ID = vertex.ID,
                                                 longitude = vertex.Longitude,
-                                                latitude = vertex.Latitude });
+                                                latitude = vertex.Latitude });*/
             
             return Json(lvm);
         }

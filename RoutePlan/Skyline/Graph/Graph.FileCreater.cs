@@ -4,40 +4,64 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 
 partial class Graph
 {
     public class FileCreater
     {
-        void Main(string[] args)
+        static void Main(string[] args)
         {
-            if(args.Length == 0)
-            {
-                Console.WriteLine("需要至少一個參數");
-                return;
-            }
-            else
-            {
-                foreach(string arg in args)
-                {
-                    string[] command = arg.Split('=');
-                    if(command.Length != 2)
-                    {
-                        Console.WriteLine("無此檔案類型指令");
-                        return;
-                    }
+            //CreateBinaryEdge("../../res/ming_edges.txt", "../../res/ming.edges");
+            //CreateBinaryNode("../../res/ming_nodes.txt", "../../res/ming.nodes");
 
-                    if (command[0].Equals("edge")) BinaryEdge(command[1], command[1] + " BinaryEdge");
-                    else if (command[0].Equals("node")) BinaryNode(command[1], command[1] + " BinaryNode");
-                    else
+            Graph graph = new Graph(new BinaryReader());
+            graph.ReadEdge("../../res/binary/ming.edges");
+            graph.ReadNode("../../res/binary/ming.nodes");
+
+            Console.WriteLine("Compelte");
+            Console.Read();
+
+
+
+
+            //CreateSerializeEdge("../../res/oldenburg_edge.txt", "../../res/text/oldenburg.edges");
+            //CreateSerializeNode("../../res/text/ming_nodes.txt", "../../res/text/ming_edges.nodes");
+
+            /*try
+            {
+                if (args.Length == 0)
+                {
+                    Console.WriteLine("需要至少一個參數");
+                    return;
+                }
+                else
+                {
+                    foreach (string arg in args)
                     {
-                        Console.WriteLine("無此檔案類型指令");
-                        return;
+                        string[] command = arg.Split('=');
+                        if (command.Length != 2)
+                        {
+                            Console.WriteLine("無此檔案類型指令");
+                            return;
+                        }
+
+                        if (command[0].Equals("edge")) CreateSerializeEdge(command[1], command[1] + " BinaryEdge");
+                        else if (command[0].Equals("node")) CreateSerializeNode(command[1], command[1] + " BinaryNode");
+                        else
+                        {
+                            Console.WriteLine("無此檔案類型指令");
+                            return;
+                        }
                     }
-                }                             
+                }
+                Console.WriteLine("finish");
             }
-            Console.WriteLine("finish");
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }*/
         }
 
         public static void CreateSubGraph(Graph graph, int amount, string start)
@@ -90,7 +114,27 @@ partial class Graph
             nodeWriter.Close();
         }
 
-        public static void BinaryEdge(string textFilePath, string outputFilePath)
+        public static void CreateSerializeEdge(string textFilePath, string outputFilePath)
+        {
+            FileStream stream = File.Open(outputFilePath, FileMode.Create);
+            Graph graph = new Graph(new TextReader());
+            BinaryFormatter formatter = new BinaryFormatter();
+
+            graph.ReadEdge(textFilePath);
+            formatter.Serialize(stream, graph.adjacencyList);
+        }
+
+        public static void CreateSerializeNode(string textFilePath, string outputFilePath)
+        {
+            FileStream stream = File.Open(outputFilePath, FileMode.Create);
+            Graph graph = new Graph(new TextReader());
+            BinaryFormatter formatter = new BinaryFormatter();
+
+            graph.ReadNode(textFilePath);
+            formatter.Serialize(stream, graph.vertices);
+        }
+
+        public static void CreateBinaryEdge(string textFilePath, string outputFilePath)
         {
             BinaryWriter edgeWriter = new BinaryWriter(File.Open(outputFilePath, FileMode.Create));
             Graph graph;
@@ -110,12 +154,12 @@ partial class Graph
                 foreach (string key in graph.adjacencyList.Keys)
                 {
                     List<Edge> neighbor = graph.adjacencyList[key];                    
-                    edgeWriter.Write((ushort)int.Parse(key));
+                    edgeWriter.Write(key);
                     edgeWriter.Write((byte)neighbor.Count);
 
                     foreach(Edge edge in neighbor)
                     {
-                        edgeWriter.Write((ushort)int.Parse(edge.Des));
+                        edgeWriter.Write(edge.Des);
                         foreach(float weight in edge.Weights)                        
                             edgeWriter.Write(weight);
                     }
@@ -129,7 +173,7 @@ partial class Graph
             }
         }       
 
-        public static void BinaryNode(string textFilePath, string outputFilePath)
+        public static void CreateBinaryNode(string textFilePath, string outputFilePath)
         {
             BinaryWriter nodeWriter = new BinaryWriter(File.Open(outputFilePath, FileMode.Create));
 
@@ -149,7 +193,7 @@ partial class Graph
                         float longitude = float.Parse(tokens[1]);
                         float latitude = float.Parse(tokens[2]);
 
-                        nodeWriter.Write((UInt16)int.Parse(tokens[0]));
+                        nodeWriter.Write(tokens[0]);
                         nodeWriter.Write(longitude);
                         nodeWriter.Write(latitude);
                     }
