@@ -46,6 +46,24 @@ namespace RoutePlan.Controllers
             return Json(lvm);
         }
 
+        public ActionResult test(String from, String to)
+        {
+
+            int x = 10;
+            int y = 20;
+            List<LocationViewModel> lvm = new List<LocationViewModel>();
+            for (int i = 0; i < 10; i++) {
+                lvm.Add(new LocationViewModel
+                {
+                    ID = i.ToString(),
+                    longitude = i + 10,
+                    latitude = i + 20
+                });
+            }
+
+            return Json(lvm);
+        }
+
 
         public ActionResult About()
         {
