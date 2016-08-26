@@ -31,25 +31,46 @@ namespace RoutePlan.Controllers
 
         public ActionResult Update(String from,String to)
         {
-            graph.ReadEdge(Server.MapPath("~/DATA/binary/ming.edges"));
-            graph.ReadNode(Server.MapPath("~/DATA/binary/ming.nodes"));
+            try
+            {                
+                graph.ReadEdge(Server.MapPath("~/DATA/binary/100.edges"));
+                graph.ReadNode(Server.MapPath("~/DATA/binary/100.nodes"));
 
-            List<LocationViewModel> lvm = new List<LocationViewModel>();
+                List<List<Vertex>> lvm;
 
-            //List<Path> paths = graph.SkylineQuery("會同館", "翟城驛");
+                List<Path> paths = graph.SkylineQuery("1", "7");
 
-           /* foreach(Vertex vertex in graph.TransformPath(paths[0]))            
-                lvm.Add(new LocationViewModel { ID = vertex.ID,
-                                                longitude = vertex.Longitude,
-                                                latitude = vertex.Latitude });*/
-            
-            return Json(lvm);
+                lvm = graph.TransformPaths(paths);
+
+                return Json(lvm);
+            }
+            catch (GraphException e)
+            {
+                return Json("");
+            }            
         }
 
         public ActionResult test(String from, String to)
         {
+            try
+            {
+                graph.ReadEdge(Server.MapPath("~/DATA/binary/california 500.edges"));
+                graph.ReadNode(Server.MapPath("~/DATA/binary/california 500.nodes"));
 
-            int x = 10;
+                List<List<Vertex>> lvm;
+
+                List<Path> paths = graph.SkylineQuery("1", "18");
+
+                lvm = graph.TransformPaths(paths);
+
+                return Json(lvm[0]);
+            }
+            catch (GraphException e)
+            {
+                return Json("");
+            }
+
+            /*int x = 10;
             int y = 20;
             //List<List<Vertex>>
             List<Vertex> lvm = new List<Vertex>();
@@ -57,7 +78,7 @@ namespace RoutePlan.Controllers
                 lvm.Add(new Vertex(i.ToString(), i + 10, i + 20));
             }
 
-            return Json(lvm);
+            return Json(lvm);*/
         }
 
 

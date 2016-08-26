@@ -2,15 +2,18 @@
 using System.IO;
 using System.Collections.Generic;
 
-partial class Graph
+public partial class Graph
 {
-    public class BinaryReader : Reader
+    public class BinaryReader : IReader
     {
         private Graph graph;
-        Graph Reader.Graph { set { graph = value; } }
+        Graph IReader.Graph { set { graph = value; } }
 
         public void ReadEdge(string filePath)
         {
+            if (!filePath.EndsWith(".edges"))
+                throw new GraphException("不可使用BinaryReader.ReadEdge讀取非edges檔");
+
             System.IO.BinaryReader reader = new System.IO.BinaryReader(File.Open(filePath, FileMode.Open));
             try
             {
@@ -42,6 +45,8 @@ partial class Graph
 
         public void ReadNode(string filePath)
         {
+            if (!filePath.EndsWith(".nodes"))
+                throw new GraphException("不可使用BinaryReader.ReadNode讀取非nodes檔");
             System.IO.BinaryReader reader = new System.IO.BinaryReader(File.Open(filePath, FileMode.Open));
             try
             {

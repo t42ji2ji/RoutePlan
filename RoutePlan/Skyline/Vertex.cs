@@ -4,8 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-[Serializable]
-class Vertex
+public class Vertex
 {
     private string _ID;
     private float _longitude, _latitude;

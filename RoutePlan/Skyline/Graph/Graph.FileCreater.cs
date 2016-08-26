@@ -5,64 +5,54 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using Newtonsoft.Json;
 
 
-partial class Graph
+public partial class Graph
 {
     public class FileCreater
     {
-        static void Main(string[] args)
+        void Main(string[] args)
         {
-            //CreateBinaryEdge("../../res/ming_edges.txt", "../../res/ming.edges");
-            //CreateBinaryNode("../../res/ming_nodes.txt", "../../res/ming.nodes");
+            AdjustEdgeText();
 
-            Graph graph = new Graph(new BinaryReader());
-            graph.ReadEdge("../../res/binary/ming.edges");
-            graph.ReadNode("../../res/binary/ming.nodes");
-
-            Console.WriteLine("Compelte");
+            Console.WriteLine("完成");
             Console.Read();
-
-
-
-
-            //CreateSerializeEdge("../../res/oldenburg_edge.txt", "../../res/text/oldenburg.edges");
-            //CreateSerializeNode("../../res/text/ming_nodes.txt", "../../res/text/ming_edges.nodes");
-
-            /*try
-            {
-                if (args.Length == 0)
-                {
-                    Console.WriteLine("需要至少一個參數");
-                    return;
-                }
-                else
-                {
-                    foreach (string arg in args)
-                    {
-                        string[] command = arg.Split('=');
-                        if (command.Length != 2)
-                        {
-                            Console.WriteLine("無此檔案類型指令");
-                            return;
-                        }
-
-                        if (command[0].Equals("edge")) CreateSerializeEdge(command[1], command[1] + " BinaryEdge");
-                        else if (command[0].Equals("node")) CreateSerializeNode(command[1], command[1] + " BinaryNode");
-                        else
-                        {
-                            Console.WriteLine("無此檔案類型指令");
-                            return;
-                        }
-                    }
-                }
-                Console.WriteLine("finish");
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }*/
         }
+
+        public static void JsonSerializeEdge()
+        {
+            Graph graph = new Graph(new BinaryReader());
+            graph.ReadEdge("res/binary/oldenburg.edges");
+            File.WriteAllText("oldenburg_edges.json", JsonConvert.SerializeObject(graph.adjacencyList));
+            
+        }
+
+        public static void BinaryFileCreate()
+        {
+            try
+            {
+                StreamReader reader = new StreamReader(File.Open("config.json", FileMode.Open));
+                Setting setting = JsonConvert.DeserializeObject<Setting>(reader.ReadToEnd());
+
+                if (setting.EdgeFile != null && setting.EdgeOutput != null)
+                    CreateBinaryEdge(setting.EdgeFile, setting.EdgeOutput);
+
+                if (setting.NodeFile != null && setting.NodeOutput != null)
+                    CreateBinaryNode(setting.NodeFile, setting.NodeOutput);
+
+            }
+            catch (FileNotFoundException e)
+            {
+                Console.WriteLine("config.json設定檔");
+                StreamWriter writer = new StreamWriter(File.Open("config.json", FileMode.Create));
+                writer.Write(JsonConvert.SerializeObject(new Setting(), Formatting.Indented));
+
+                Console.WriteLine("已創建config.json設定檔，設定後再開啟程式");
+                writer.Close();
+            }
+        }
+
 
         public static void CreateSubGraph(Graph graph, int amount, string start)
         {
@@ -227,8 +217,38 @@ partial class Graph
             }
             writer.Close();
         }
-    }
+
+        public static void AdjustEdgeText()
+        {
+            string[] origin = File.ReadAllLines("res/text/ming_nodes (origin).txt");
+            StreamWriter writer = new StreamWriter(File.Open("res/text/ming_nodes2.txt", FileMode.Create));
+            string[] newLines = new string[origin.Length];
+
+            foreach(string line in origin)
+            {
+                string[] token = line.Split(' ');
+                string newLine = "";
+                for (int i = 1; i < token.Length; ++i)
+                {
+                    if (i != 1) newLine += " ";
+                     newLine += token[i];
+                }
+                writer.WriteLine(newLine);
+            }
+            writer.Close();
+        }
+
+        private class Setting
+        {
+            public string EdgeFile { get; set; }
+            public string EdgeOutput { get; set; }
+            public string NodeFile { get; set; }
+            public string NodeOutput { get; set; }
+        }
+    }   
 }
+
+
 
 /*public static void BinaryEdge(string textFilePath, string outputFilePath)
         {

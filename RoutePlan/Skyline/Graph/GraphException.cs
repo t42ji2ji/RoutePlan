@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-class GraphException : Exception
+public class GraphException : Exception
 {
     public GraphException(string message) : base(message) { }
 }

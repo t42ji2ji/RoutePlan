@@ -28,65 +28,36 @@ using System.Collections;
  *   
 */
 
-partial class Graph
+public partial class Graph
 {
-    void Main(string[] args)
-    {
-        /*string[] origin = File.ReadAllLines("../../res/text/ming_nodes.txt");
-        StreamWriter writer = new StreamWriter(File.Open("../../res/text/ming_nodes2.txt", FileMode.Create));
-        string[] newLines = new string[origin.Length];
-
-        foreach(string line in origin)
-        {
-            string[] token = line.Split(' ');
-            string newLine = "";
-            for (int i = 1; i < token.Length; ++i)
-            {
-                if (i != 1) newLine += " ";
-                 newLine += token[i];
-            }
-            writer.WriteLine(newLine);
-        }*/
-        
+    static void Main(string[] args)
+    {  
         try
         {
-            Graph graph = new Graph(new TextReader());
-            StreamWriter writer = new StreamWriter(File.Open("log.txt", FileMode.Create));
+            Graph graph = new Graph(new BinaryReader());
+            //StreamWriter writer = new StreamWriter(File.Open("log.txt", FileMode.Create));
 
-            graph.ReadEdge("../../res/text/test.txt");
-            //graph.ReadNode("../../res/binary/100Node");
+            graph.ReadEdge("res/binary/ming.edges");
+            graph.ReadNode("res/binary/ming.nodes");
 
-            for (int end = 0; end < 500; ++end)
-            {
-                try
-                {
-                    List<Path> paths = graph.SkylineQuery("7", end.ToString());
-                    writer.WriteLine("Skyline Paths: ");
-                    foreach (var path in paths)
-                        writer.WriteLine(path);                    
-                }
-                catch(GraphException e)
-                {
-                    writer.WriteLine(e.Message);
-                }
-                writer.Flush();
-            }
-            writer.Close();
+            //Console.WriteLine(graph.GraphCheck());
 
-            //graph.TransformPaths(paths);
-            Console.WriteLine("Complete");
+            List<Path> paths = graph.SkylineQuery("涿鹿驛", "西樂驛");
+            Console.WriteLine("Skyline Paths: ");
+            foreach (var path in paths)
+                Console.WriteLine(path);
         }
         catch (GraphException e)
         {
             Console.WriteLine(e.Message);
         }
-          
-                
+
+        Console.WriteLine("Complete");
         Console.ReadLine();
     }
 
     private int dimension;
-    private Reader reader;
+    private IReader reader;
     private Dictionary<string, List<Edge>> adjacencyList = new Dictionary<string, List<Edge>>();
     private Dictionary<string, Vertex> vertices = new Dictionary<string, Vertex>();
     private Dictionary<string, List<string>> path;
@@ -103,7 +74,7 @@ partial class Graph
         NON_DOMINATE
     }
 
-    public Graph(Reader reader)
+    public Graph(IReader reader)
     {
         this.reader = reader;
         this.reader.Graph = this;
@@ -134,7 +105,7 @@ partial class Graph
         }
             
         foreach(Edge edge in adjacencyList[start])
-            distance[edge.Des] = edge.WeightsSum;
+            distance[edge.Des] = edge.WeightsSum();
 
         //Start shortest path query
         while (true)
@@ -173,7 +144,7 @@ partial class Graph
         Edge desEdge = GetEdge(expand, des);
         if (!found.Contains(des) && desEdge != null)
         {
-            float sum = distance[expand] + desEdge.WeightsSum;
+            float sum = distance[expand] + desEdge.WeightsSum();
             if (distance[des] == -1 || distance[des] > sum)
             {
                 distance[des] = sum;
@@ -181,6 +152,16 @@ partial class Graph
                 path[des].Add(des);
             }
         }
+    }
+
+    public string GraphCheck()
+    {
+        string message = "找不到：";
+
+        foreach(var key in adjacencyList.Keys)        
+            if (!vertices.ContainsKey(key))            
+                message += key + " ";
+        return message;
     }
 
     private Edge GetEdge(string vertex1, string vertex2)
@@ -217,7 +198,7 @@ partial class Graph
 
         foreach(string vertex in path.nodes){
             try { vertexPath.Add(vertices[vertex]); }
-            catch (KeyNotFoundException e) { throw new GraphException(e.Message); }
+            catch (KeyNotFoundException) { /*throw new GraphException("找不到" + vertex);*/ }
         }
         return vertexPath;
     }

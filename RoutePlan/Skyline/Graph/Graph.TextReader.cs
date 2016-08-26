@@ -1,16 +1,19 @@
 ﻿using System;
 using System.IO;
 
-partial class Graph
+public partial class Graph
 {
-    public class TextReader : Reader
+    public class TextReader : IReader
     {
         private Graph graph;
 
-        Graph Reader.Graph { set { graph = value; } }
+        Graph IReader.Graph { set { graph = value; } }
 
         public void ReadEdge(string filePath)
         {
+            if (!filePath.EndsWith(".txt"))
+                throw new GraphException("不可使用TextReader讀取非txt檔");
+
             try
             {
                 //Initializing
@@ -42,6 +45,9 @@ partial class Graph
 
         public void ReadNode(string filePath)
         {
+            if (!filePath.EndsWith(".txt"))
+                throw new GraphException("不可使用TextReader讀取非txt檔");
+
             try
             {
                 //Initializing
@@ -72,4 +78,5 @@ partial class Graph
         }
     }
 }
+
 

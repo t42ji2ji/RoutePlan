@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-partial class Graph
+public partial class Graph
 {
     private class Skyline
     {
@@ -39,7 +39,7 @@ partial class Graph
             List<Path> removePaths = new List<Path>();
             bool beDominateFlag = false;
 
-            foreach(Path path in enumPaths)
+            foreach (Path path in enumPaths)
             {
                 switch (Dominate(newPath.weights, path.weights))
                 {
@@ -54,7 +54,7 @@ partial class Graph
                     case DominateResult.DOMINATE:
                         removePaths.Add(path);
                         break;
-                }               
+                }
             }
 
             if (!beDominateFlag)
@@ -66,7 +66,7 @@ partial class Graph
 
         private bool BeDominateByEnumPaths(float[] weight)
         {
-            foreach(Path path in enumPaths)            
+            foreach (Path path in enumPaths)
                 if (Dominate(weight, path.weights) == DominateResult.BE_DOMINATE)
                     return true;
             return false;
@@ -86,7 +86,7 @@ partial class Graph
             }
             else if (BeDominateByEnumPaths(pathWeights))
             {
-                //Console.WriteLine("return " + new Path(new List<string>(onPath), (float[])pathWeights.Clone()));
+                Console.WriteLine("return " + new Path(new List<string>(onPath), (float[])pathWeights.Clone()));
                 onPath.Remove(start);
                 return;
             }
@@ -133,4 +133,5 @@ partial class Graph
         }
     }
 }
+
 

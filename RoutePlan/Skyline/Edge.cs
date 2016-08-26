@@ -4,65 +4,47 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-[Serializable]
-class Edge
+
+public class Edge
 {
-    private string _destinationVertex;
-    private float[] _weights;
+    public string Des { get; set; }
+    public float[] Weights { get; set; }
 
-    public string Des
-    {
-        get
-        {
-            return _destinationVertex;
-        }
-    }
-
-    public float[] Weights
-    {
-        get
-        {
-            return _weights;
-        }
-    }
-
-    public float WeightsSum
-    {
-        get
-        {
-            float sum = 0;
-            foreach (int value in _weights)
-                sum += value;
-            return sum;
-        }
+    public float WeightsSum()
+    {   
+        float sum = 0;
+        foreach (int value in Weights)
+            sum += value;
+        return sum;        
     }
 
     public Edge(string destinationVertex, float[] weights)
     {
-        _destinationVertex = destinationVertex;
-        _weights = weights;
+        Des = destinationVertex;
+        Weights = weights;
     }
 
     public override string ToString()
     {
-        return string.Format("{0}{1}", _destinationVertex, WeightString());
+        return string.Format("{0}{1}", Des, WeightString());
     }
 
     private string WeightString()
     {
-        if (_weights == null) return "No Weights";
+        if (Weights == null) return "No Weights";
 
-        string weightString = "[" + _weights[0];
+        string weightString = "[" + Weights[0];
         int i;
-        for (i = 1; i < _weights.Length; ++i)
-            weightString += "," + _weights[i];
+        for (i = 1; i < Weights.Length; ++i)
+            weightString += "," + Weights[i];
         weightString += "]";
         return weightString;
     }
 
     public override bool Equals(object otherEdge)
     {
-        return ((Edge)otherEdge)._destinationVertex.Equals(_destinationVertex);
+        if (otherEdge is Edge)
+            return ((Edge)otherEdge).Des.Equals(Des);        
+        else return false;
     }
 }
-

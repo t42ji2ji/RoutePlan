@@ -260,12 +260,13 @@
         var data = { from: from_id, to: to_id};
 
 
-        $.post("@Url.Content("~/Home/test")", data, function(res) {
+        $.post("@Url.Content("~/Home/test")", data, function (res) {
+            console.log(res)
             for (var i = 0; i < res.length; i++) {
-                var x = Math.random();
-                var y = Math.random();
-                console.log(res)
-                var loc = { lat: res[i].Latitude * x + 32.966078, lng: res[i].Longitude * y + 104.497309 };
+                //var x = Math.random();
+                //var y = Math.random();
+                
+                var loc = { lat: res[i].Latitude, lng: res[i].Longitude};
               
                 //add marker
                 var marker = new google.maps.Marker({
