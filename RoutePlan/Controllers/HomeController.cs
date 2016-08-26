@@ -46,6 +46,20 @@ namespace RoutePlan.Controllers
             return Json(lvm);
         }
 
+        public ActionResult test(String from, String to)
+        {
+
+            int x = 10;
+            int y = 20;
+            //List<List<Vertex>>
+            List<Vertex> lvm = new List<Vertex>();
+            for (int i = 0; i < 10; i++) {
+                lvm.Add(new Vertex(i.ToString(), i + 10, i + 20));
+            }
+
+            return Json(lvm);
+        }
+
 
         public ActionResult About()
         {

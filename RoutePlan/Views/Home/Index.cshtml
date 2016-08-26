@@ -52,11 +52,11 @@
 
 
     function initialize() {
-
-        var taichung = { lat: 24.179971, lng: 120.648392 };
+       
+        var center = { lat: 32.966078, lng: 104.497309 };
         var mapProp = {
-            center: new google.maps.LatLng(taichung),
-            zoom: 8,
+            center: new google.maps.LatLng(center),
+            zoom: 4,
             streetViewControl: false,
             mapTypeId: google.maps.MapTypeId.TERRAIN,
             mapTypeIds: ['mystyle', google.maps.MapTypeId.ROADMAP, google.maps.MapTypeId.TERRAIN]
@@ -152,20 +152,20 @@
         markers.push(marker);
     }
 
-
+    //path = Route.push() push多少點就多少
+    //RoutePaht = new Polyline()
+    //Polys = Polys.push 實際畫的線條
   
     //Route
     function simpleRoute() {
         // simple route
         //cleanRoute();
         for (var i = 0; i < 1000; i++) {
-           
+        
             var x = Math.random() * 10
             var y = Math.random() * 10
             var l = { lat: 24.179971+x, lng: 120.648392+y};
             Route.push(l);
-
-      
         }
         
         RoutePath = new google.maps.Polyline({
@@ -253,6 +253,44 @@
     }
 
 
+    
+    function test() {
+
+           
+        var data = { from: from_id, to: to_id};
+
+
+        $.post("@Url.Content("~/Home/test")", data, function(res) {
+            for (var i = 0; i < res.length; i++) {
+                var x = Math.random();
+                var y = Math.random();
+                console.log(res)
+                var loc = { lat: res[i].Latitude * x + 32.966078, lng: res[i].Longitude * y + 104.497309 };
+              
+                //add marker
+                var marker = new google.maps.Marker({
+                    position: loc,
+                    label: labels[labelIndex % labels.length],
+                    map: map
+                });
+                markers.push(marker);
+                labelIndex++;
+                Route.push(loc);
+            }
+
+            RoutePath = new google.maps.Polyline({
+                path: Route,
+                geodesic: true,
+                strokeColor: '#FF0000',
+                strokeOpacity: 0.5,
+                strokeWeight: 2
+            });
+            Polys.push(RoutePath);
+            //RoutePath.setMap(map);
+            setMapOnAll(map);
+        }, "json");
+    }
+
 </script>
 
 <style>
@@ -260,14 +298,20 @@
 
     #googleMap{
         width: 100%;
-        height:700px;
+        height:900px;
         z-index:0;
         position:absolute;
+        padding-top:-5px;
+    }
+
+    .fullscreen {
+        width:100%;
+        height:100%;
     }
 
 </style>
 
-<div class="container-fluid"style="position:relative;">
+<div class="container-fluid fullscreen"style="position:relative;">
 
    <div id="googleMap" ></div>
 
@@ -311,6 +355,7 @@
             <button type="submit" class="btn btn-success">規劃路徑</button>
             <button type="button" class="btn btn-danger" onclick="removeRoute()">清除</button>
             <button type="button" class="btn btn-default" onclick="AJAX()">AJAX</button>
+            <button type="button" class="btn btn-default" onclick="test()">測試</button>
         </div>
 
     </div>
