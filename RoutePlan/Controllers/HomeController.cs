@@ -54,18 +54,14 @@ namespace RoutePlan.Controllers
         {
             try
             {
-                graph.ReadEdge(Server.MapPath("~/DATA/binary/california 500.edges"));
-                graph.ReadNode(Server.MapPath("~/DATA/binary/california 500.nodes"));
+                graph.ReadEdge(Server.MapPath("~/DATA/binary/california 500(6).edges"));
+                graph.ReadNode(Server.MapPath("~/DATA/binary/california.nodes"));
 
-                List<List<Vertex>> lvm;
-
-                List<Path> paths = graph.SkylineQuery("1", "18");
-
-                lvm = graph.TransformPaths(paths);
+                List<List<Vertex>> lvm = graph.EnumPath("1", "263");
 
                 return Json(lvm[0]);
             }
-            catch (GraphException e)
+            catch (GraphException)
             {
                 return Json("");
             }

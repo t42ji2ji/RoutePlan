@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-using Newtonsoft.Json;
 
 
 public partial class Graph
@@ -14,21 +13,29 @@ public partial class Graph
     {
         void Main(string[] args)
         {
-            AdjustEdgeText();
+            
+            /*Graph graph = new Graph(new BinaryReader());
+            graph.ReadEdge("res/binary/california(6).edges");
+            graph.ReadNode("res/binary/california.nodes");
+
+            CreateSubGraph(graph, 500, "1");*/
+
+            //RandomWeight("res/text/california edges.txt", "res/text/california edges(6).txt", 5);
 
             Console.WriteLine("完成");
-            Console.Read();
         }
 
-        public static void JsonSerializeEdge()
+        //Main program
+        /*public static void JsonSerializeEdge()
         {
             Graph graph = new Graph(new BinaryReader());
             graph.ReadEdge("res/binary/oldenburg.edges");
             File.WriteAllText("oldenburg_edges.json", JsonConvert.SerializeObject(graph.adjacencyList));
             
-        }
+        }*/
 
-        public static void BinaryFileCreate()
+        //Main program
+        /*public static void BinaryFileCreate()
         {
             try
             {
@@ -51,7 +58,7 @@ public partial class Graph
                 Console.WriteLine("已創建config.json設定檔，設定後再開啟程式");
                 writer.Close();
             }
-        }
+        }*/        
 
 
         public static void CreateSubGraph(Graph graph, int amount, string start)
@@ -59,8 +66,8 @@ public partial class Graph
             Queue<string> nodes = new Queue<string>();
             HashSet<string> visist = new HashSet<string>();
             HashSet<string> beenOutputNode = new HashSet<string>();
-            StreamWriter edgeWriter = new StreamWriter("Edges.txt");
-            StreamWriter nodeWriter = new StreamWriter("Nodes.txt");
+            StreamWriter edgeWriter = new StreamWriter("Sub Edges.txt");
+            StreamWriter nodeWriter = new StreamWriter("Sub Nodes.txt");
             int count = 1;
             Vertex detail;
 

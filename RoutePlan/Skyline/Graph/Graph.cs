@@ -30,24 +30,30 @@ using System.Collections;
 
 public partial class Graph
 {
-    static void Main(string[] args)
+    void Main(string[] args)
     {  
         try
         {
             Graph graph = new Graph(new BinaryReader());
             //StreamWriter writer = new StreamWriter(File.Open("log.txt", FileMode.Create));
 
-            graph.ReadEdge("res/binary/ming.edges");
-            graph.ReadNode("res/binary/ming.nodes");
+            graph.ReadEdge("res/binary/california 500(6).edges");
+            graph.ReadNode("res/binary/california.nodes");
 
             //Console.WriteLine(graph.GraphCheck());
 
-            List<Path> paths = graph.SkylineQuery("涿鹿驛", "西樂驛");
+            List<Path> paths = graph.SkylineQuery("1", "261");
             Console.WriteLine("Skyline Paths: ");
             foreach (var path in paths)
                 Console.WriteLine(path);
+                /*foreach(var vertex in path)
+                    Console.Write(vertex + " ");*/
         }
         catch (GraphException e)
+        {
+            Console.WriteLine(e.Message);
+        }
+        catch(FileNotFoundException e)
         {
             Console.WriteLine(e.Message);
         }
@@ -137,7 +143,23 @@ public partial class Graph
             throw new GraphException("找不到終點節點: " + end);        
 
         return new Skyline(this).SkylineQuery(start, end);
-    }    
+    }
+
+    public List<List<Vertex>> EnumPath(string start, string end)
+    {
+        if (!hasReadEdge)
+            throw new GraphException("尚未執行ReadEdge");
+
+        if (!adjacencyList.ContainsKey(start))
+            throw new GraphException("找不到起始節點: " + start);
+
+        if (!adjacencyList.ContainsKey(end))
+            throw new GraphException("找不到終點節點: " + end);
+
+        List<List<string>> enumPaths = new Skyline(this).EnumPath(start, end);
+
+        return TransformPaths(enumPaths);
+    }
 
     private void Update(string expand, string des)
     {
@@ -198,7 +220,7 @@ public partial class Graph
 
         foreach(string vertex in path.nodes){
             try { vertexPath.Add(vertices[vertex]); }
-            catch (KeyNotFoundException) { /*throw new GraphException("找不到" + vertex);*/ }
+            catch (KeyNotFoundException e) { /*throw new GraphException("找不到" + vertex);*/ }
         }
         return vertexPath;
     }
@@ -212,7 +234,32 @@ public partial class Graph
         
         return vertexPaths;
     }
-    
+
+    public List<Vertex> TransformPath(List<string> path)
+    {
+        if (!hasReadNode)
+            throw new GraphException("尚未執行ReadNode");
+
+        List<Vertex> vertexPath = new List<Vertex>();
+
+        foreach (string vertex in path)
+        {
+            try { vertexPath.Add(vertices[vertex]); }
+            catch (KeyNotFoundException e) { /*throw new GraphException("找不到" + vertex);*/ }
+        }
+        return vertexPath;
+    }
+
+    public List<List<Vertex>> TransformPaths(List<List<string>> paths)
+    {
+        List<List<Vertex>> vertexPaths = new List<List<Vertex>>();
+
+        foreach (List<string> path in paths)
+            vertexPaths.Add(TransformPath(path));
+
+        return vertexPaths;
+    }
+
     public void ReadEdge(string filePath)
     {
         hasReadEdge = true;

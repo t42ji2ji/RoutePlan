@@ -232,10 +232,9 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="DATA\BinaryEdgeFileFormat.txt" />
-    <Content Include="DATA\text\1000Edge%283%29.txt" />
-    <Content Include="DATA\text\1000Node.txt" />
-    <Content Include="DATA\text\100Edges.txt" />
-    <Content Include="DATA\text\100Nodes.txt" />
+    <Content Include="DATA\text\california 1000 edges%286%29.txt" />
+    <Content Include="DATA\text\california 500 edges%286%29.txt" />
+    <Content Include="DATA\text\california nodes.txt" />
     <Content Include="DATA\text\error.txt" />
     <Content Include="DATA\text\ming_edges.txt" />
     <Content Include="DATA\text\ming_nodes %28origin%29.txt" />
@@ -251,17 +250,12 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="DATA\binary\100.edges" />
-    <Content Include="DATA\binary\100.nodes" />
-    <Content Include="DATA\binary\1000%283%29.edges" />
-    <Content Include="DATA\binary\1000.nodes" />
     <Content Include="DATA\binary\error.edges" />
     <Content Include="DATA\binary\ming.edges" />
     <Content Include="DATA\binary\ming.nodes" />
-    <Content Include="DATA\binary\oldenburg 500.edges" />
-    <Content Include="DATA\binary\oldenburg 500.nodes" />
-    <Content Include="DATA\binary\california 500.edges" />
-    <Content Include="DATA\binary\california 500.nodes" />
+    <Content Include="DATA\binary\california 1000%286%29.edges" />
+    <Content Include="DATA\binary\california 500%286%29.edges" />
+    <Content Include="DATA\binary\california.nodes" />
     <None Include="Properties\PublishProfiles\jj.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />

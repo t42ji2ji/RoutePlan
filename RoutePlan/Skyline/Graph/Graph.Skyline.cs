@@ -7,7 +7,8 @@ public partial class Graph
     {
         private Graph graph;
         //Use to enum probable path
-        private List<Path> enumPaths;
+        private List<Path> SkylineEnumPaths;
+        private List<List<string>> enumPaths;
         private HashSet<string> onPath;
         private float[] pathWeights;
 
@@ -19,7 +20,7 @@ public partial class Graph
         public List<Path> SkylineQuery(string start, string end)
         {
             //Initialize
-            enumPaths = new List<Path>();
+            SkylineEnumPaths = new List<Path>();
             onPath = new HashSet<string>();
             pathWeights = new float[graph.dimension];
 
@@ -27,6 +28,18 @@ public partial class Graph
                 pathWeights[i] = 0;
 
             //Enumerate paths and select skyline paths
+            SkylineEnumerate(start, end);
+
+            return SkylineEnumPaths;
+        }
+
+        public List<List<string>> EnumPath(string start, string end)
+        {
+            //Initialize
+            enumPaths = new List<List<string>>();
+            onPath = new HashSet<string>();
+
+            //Enumerate paths
             Enumerate(start, end);
 
             return enumPaths;
@@ -39,7 +52,7 @@ public partial class Graph
             List<Path> removePaths = new List<Path>();
             bool beDominateFlag = false;
 
-            foreach (Path path in enumPaths)
+            foreach (var path in SkylineEnumPaths)
             {
                 switch (Dominate(newPath.weights, path.weights))
                 {
@@ -59,20 +72,20 @@ public partial class Graph
 
             if (!beDominateFlag)
             {
-                enumPaths.Add(newPath);
-                enumPaths.RemoveAll(path => removePaths.Contains(path));
+                SkylineEnumPaths.Add(newPath);
+                SkylineEnumPaths.RemoveAll(path => removePaths.Contains(path));
             }
         }
 
         private bool BeDominateByEnumPaths(float[] weight)
         {
-            foreach (Path path in enumPaths)
+            foreach (Path path in SkylineEnumPaths)
                 if (Dominate(weight, path.weights) == DominateResult.BE_DOMINATE)
                     return true;
             return false;
         }
 
-        private void Enumerate(string start, string end)
+        private void SkylineEnumerate(string start, string end)
         {
             onPath.Add(start);
 
@@ -86,7 +99,8 @@ public partial class Graph
             }
             else if (BeDominateByEnumPaths(pathWeights))
             {
-                Console.WriteLine("return " + new Path(new List<string>(onPath), (float[])pathWeights.Clone()));
+                //Console.WriteLine("return");
+                //Console.WriteLine("return " + new Path(new List<string>(onPath), (float[])pathWeights.Clone()));
                 onPath.Remove(start);
                 return;
             }
@@ -96,9 +110,27 @@ public partial class Graph
                 {
                     addToPathWeights(neighbor.Weights);
                     //detect be dominate
-                    Enumerate(neighbor.Des, end);
+                    SkylineEnumerate(neighbor.Des, end);
                     SubstractToPathWeights(neighbor.Weights);
                 }
+
+            onPath.Remove(start);
+        }
+
+        private void Enumerate(string start, string end)
+        {
+            onPath.Add(start);
+
+            if (start == end)
+            {
+                enumPaths.Add(new List<string>(onPath));
+                onPath.Remove(start);
+                return;
+            }
+
+            foreach (Edge neighbor in graph.adjacencyList[start])
+                if (!onPath.Contains(neighbor.Des))                
+                    Enumerate(neighbor.Des, end);               
 
             onPath.Remove(start);
         }
