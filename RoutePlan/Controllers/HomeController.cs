@@ -57,9 +57,9 @@ namespace RoutePlan.Controllers
                 graph.ReadEdge(Server.MapPath("~/DATA/binary/california 500(6).edges"));
                 graph.ReadNode(Server.MapPath("~/DATA/binary/california.nodes"));
 
-                List<List<Vertex>> lvm = graph.EnumPath("1", "263");
+                List<List<Vertex>> lvm = graph.EnumPath(from, to);
 
-                return Json(lvm[0]);
+                return Json(lvm);
             }
             catch (GraphException)
             {
