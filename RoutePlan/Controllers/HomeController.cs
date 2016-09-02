@@ -5,6 +5,7 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using RoutePlan.ViewModels;
+using System.IO;
 
 namespace RoutePlan.Controllers
 {
@@ -17,14 +18,32 @@ namespace RoutePlan.Controllers
 
         public ActionResult Index()
         {
-            
-            
+            //List<ReportViewModel> rev = new List<ReportViewModel>();
+            //StreamReader sr = new StreamReader("~/DATA/text/end-nodes.txt");
+            //while (!sr.EndOfStream)
+            //{               // 每次讀取一行，直到檔尾
+            //    string line = sr.ReadLine();            // 讀取文字到 line 變數
+            //    string[] sArray = line.Split(',');
+            //    foreach (string str in sArray)
+            //    {
+            //        ReportViewModel s = new ReportViewModel();
+            //        s.Name = str;
+            //        rev.Add(s);
+            //    }
+            //}
+            //sr.Close();
+
+
+
+
+
             return View();
         }       
 
         [HttpPost]
         public ActionResult Index(string form_from,string form_to)
         {
+          
             LocationViewModel lvm = new LocationViewModel();
             return View();
         }
@@ -57,7 +76,8 @@ namespace RoutePlan.Controllers
                 graph.ReadEdge(Server.MapPath("~/DATA/binary/california 500(6).edges"));
                 graph.ReadNode(Server.MapPath("~/DATA/binary/california.nodes"));
 
-                List<List<Vertex>> lvm = graph.EnumPath(from, to);
+
+                List<List<Vertex>> lvm = graph.TransformPaths(graph.SkylineQuery("1", to));
 
                 return Json(lvm);
             }
