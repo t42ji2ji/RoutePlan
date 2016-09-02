@@ -18,32 +18,33 @@ namespace RoutePlan.Controllers
 
         public ActionResult Index()
         {
-            //List<ReportViewModel> rev = new List<ReportViewModel>();
-            //StreamReader sr = new StreamReader("~/DATA/text/end-nodes.txt");
-            //while (!sr.EndOfStream)
-            //{               // 每次讀取一行，直到檔尾
-            //    string line = sr.ReadLine();            // 讀取文字到 line 變數
-            //    string[] sArray = line.Split(',');
-            //    foreach (string str in sArray)
-            //    {
-            //        ReportViewModel s = new ReportViewModel();
-            //        s.Name = str;
-            //        rev.Add(s);
-            //    }
-            //}
-            //sr.Close();
+           // ViewBag.ToList = int[]{};
+            List<ReportViewModel> rev = new List<ReportViewModel>();
+            StreamReader sr = new StreamReader(Server.MapPath("~/DATA/text/end-nodes.txt"));
+            while (!sr.EndOfStream)
+            {               // 每次讀取一行，直到檔尾
+                string line = sr.ReadLine();            // 讀取文字到 line 變數
+                string[] sArray = line.Split(',');
+                foreach (string str in sArray)
+                {
+                    ReportViewModel s = new ReportViewModel();
+                    s.Name = str;
+                    rev.Add(s);
+                }
+            }
+            sr.Close();
 
 
 
 
 
-            return View();
+            return View(rev);
         }       
 
         [HttpPost]
         public ActionResult Index(string form_from,string form_to)
         {
-          
+            
             LocationViewModel lvm = new LocationViewModel();
             return View();
         }
