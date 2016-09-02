@@ -186,31 +186,6 @@
     //path = Route.push() push多少點就多少
     //RoutePaht = new Polyline()
     //Polys = Polys.push 實際畫的線條
-  
-    //Route
-    function simpleRoute() {
-        // simple route
-        //cleanRoute();
-        for (var i = 0; i < 1000; i++) {
-        
-            var x = Math.random() * 10
-            var y = Math.random() * 10
-            var l = { lat: 24.179971+x, lng: 120.648392+y};
-            Route.push(l);
-        }
-        
-        RoutePath = new google.maps.Polyline({
-            path: Route,
-            geodesic: true,
-            strokeColor: '#FF0000',
-            strokeOpacity: 1,
-            strokeWeight: 3
-        });
-        Polys.push(RoutePath);
-        //RoutePath.setMap(map);
-        setMapOnAll(map);
-    }
-
 
 
     //Remove Route
@@ -326,13 +301,14 @@
 
 
         $.post("@Url.Content("~/Home/test")", data, function (res) {
-            console.log(res[1])
+            console.log(res)
          
             for (var j = 0; j < res.length; j++) {
                 var skylinepath = res[j];
                 var skylinecolor = ["#FF0000", "#3399ff", "#ffff00", "#33cc33", "#ff9933", "#9933ff"];
                 var labelss = ['s', 'e'];
                 var flag = 0;
+                Route = [];
                 for (var i = 0; i < skylinepath.length; i++) {
                     //var x = Math.random();
                     //var y = Math.random();
@@ -360,9 +336,10 @@
                     //    map: map
                     //});
                     //markers.push(marker);
-
+                    
                     Route.push(loc);
                 }
+             
                 RoutePath = new google.maps.Polyline({
                     path: Route,
                     geodesic: true,
@@ -370,6 +347,8 @@
                     strokeOpacity:1,
                     strokeWeight: 15-j*2
                 });
+
+
                 Polys.push(RoutePath);
             }
 
