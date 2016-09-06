@@ -85,10 +85,10 @@
 
     function initialize() {
        
-        var center = { lat: 42.173016, lng: -120.825356};
+        var center = { lat: 41.682016, lng: -122.325356};
         var mapProp = {
             center: new google.maps.LatLng(center),
-            zoom: 7,
+            zoom: 10,
             streetViewControl: false,
             mapTypeId: google.maps.MapTypeId.TERRAIN,
             mapTypeIds: ['mystyle', google.maps.MapTypeId.ROADMAP, google.maps.MapTypeId.TERRAIN]
@@ -241,11 +241,14 @@
         //});
         //markers.push(marker);
         for (var i = 0; i < markerloc.length; i++) {
-            var marker = new google.maps.Marker({
-                position: markerloc[i],
-                map: map
-            });
-            markers.push(marker);
+            for (var j = 0; j < markerloc[i].length; j++) {
+                alert( markerloc[i]);
+                var marker = new google.maps.Marker({
+                    position: markerloc[i],
+                    map: map
+                });
+                markers.push(marker);
+            }
         }
     }
 
@@ -282,20 +285,19 @@
     
     function test() {
 
-      
         if (from_id == null || to_id == null) {
             alert("請設置起終點");
             return false;
         }
 
-
-        if (Polys!=null){
             Route.length = 0;
             deleteMarkers();
             labelIndex = 0;
             cleanRoute();
-        }
+            markerloc = [];
+     
 
+          
         $(".checkline").each(function () { $(this).prop("checked", true); });
 
         var data = { from: from_id, to: to_id};
@@ -303,7 +305,7 @@
 
         $.post("@Url.Content("~/Home/test")", data, function (res) {
             console.log(res)
-         
+      
             for (var j = 0; j < res.length; j++) {
                 var skylinepath = res[j];
                 var skylinecolor = ["#FF0000", "#3399ff", "#ffff00", "#33cc33", "#ff9933", "#9933ff"];
@@ -327,7 +329,8 @@
                         flag++;
                         markers.push(marker);
                     } else {
-                        markerloc.push(loc);
+                        markerloc[j] = [];
+                        markerloc[j].push(loc);
                     }
 
                  
@@ -435,7 +438,7 @@
 
 
         <div class="btn-group" role="group" aria-label="按鈕" style="margin-left:20px;margin-top:20px;">
-            <button type="button" class="btn btn-default" onclick="setmapMarker()">測試</button>
+          @*  <button type="button" class="btn btn-default" onclick="setmapMarker()">測試</button>*@      
             <button type="submit" class="btn btn-success" onclick="test()">路徑規劃</button>
             <button type="button" class="btn btn-danger" onclick="removeRoute()">清除</button>
             @*<button type="button" class="btn btn-default" onclick="AJAX()">AJAX</button>*@
